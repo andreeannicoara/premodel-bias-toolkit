@@ -37,16 +37,6 @@ dist/
 *.fls
 *.fdb_latexmk
 
-# Data and models
-/data/
-/datasets/
-/models/
-*.h5
-*.hdf5
-*.pth
-*.ckpt
-*.mat
-
 # Misc
 .pytest_cache/
 .coverage
