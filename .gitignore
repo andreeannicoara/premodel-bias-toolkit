@@ -1,0 +1,70 @@
+# OS
+Thumbs.db
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+env/
+venv/
+ENV/
+.env
+.venv
+pip-wheel-metadata/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Build / distribution
+build/
+dist/
+*.egg
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+
+# Data and models
+/data/
+/datasets/
+/models/
+*.h5
+*.hdf5
+*.pth
+*.ckpt
+*.mat
+
+# Misc
+.pytest_cache/
+.coverage
+npm-debug.log
+yarn-error.log
+node_modules/
+
+# SQLite
+*.db
+*.sqlite3
+
+# binaries
+*.exe
+*.dll
+*.o
+*.class
+
+# Keep secrets out
+.env.local
+secrets.json
+credentials.json
