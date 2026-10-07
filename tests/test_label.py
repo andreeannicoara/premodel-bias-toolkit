@@ -138,3 +138,72 @@ def test_label_audit_raises_for_missing_column():
             label_col="outcome",
             positive_label=1,
         )
+
+
+def test_label_audit_rejects_invalid_p_threshold():
+    df = pd.DataFrame(
+        {
+            "race": ["A", "A", "B", "B"],
+            "outcome": [0, 1, 0, 1],
+        }
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="p_threshold must be between 0 and 1",
+    ):
+        run_label_audit(
+            df,
+            group_cols=["race"],
+            label_col="outcome",
+            positive_label=1,
+            p_threshold=1.5,
+        )
+
+
+def test_label_audit_rejects_invalid_threshold_order():
+    df = pd.DataFrame(
+        {
+            "race": ["A", "A", "B", "B"],
+            "outcome": [0, 1, 0, 1],
+        }
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="critical_threshold",
+    ):
+        run_label_audit(
+            df,
+            group_cols=["race"],
+            label_col="outcome",
+            positive_label=1,
+            warning_threshold=30.0,
+            critical_threshold=10.0,
+        )
+
+
+def test_label_audit_writes_csv(tmp_path):
+    df = pd.DataFrame(
+        {
+            "race": ["A"] * 20 + ["B"] * 20,
+            "outcome": [1] * 10 + [0] * 10 + [1] * 10 + [0] * 10,
+        }
+    )
+
+    result = run_label_audit(
+        df,
+        group_cols=["race"],
+        label_col="outcome",
+        positive_label=1,
+        output_dir=str(tmp_path),
+    )
+
+    output_file = tmp_path / "label_audit.csv"
+
+    assert output_file.exists()
+
+    saved = pd.read_csv(output_file)
+
+    assert len(saved) == len(result)
+    assert list(saved.columns) == list(result.columns)

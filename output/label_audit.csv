@@ -1,0 +1,2 @@
+label_variable,positive_label,group_variable,group_1,group_2,group_1_count,group_2_count,group_1_positive_count,group_2_positive_count,group_1_positive_rate,group_2_positive_rate,disparity_pp,chi2,p_value,degrees_of_freedom,flag,reason
+outcome,1,race,A,B,20,20,10,10,50.0,50.0,0.0,0.0,1.0,1,INFO,No statistically significant association detected.

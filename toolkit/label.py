@@ -18,6 +18,10 @@ from itertools import combinations
 import pandas as pd
 from scipy import stats
 
+import os
+
+from toolkit.utils import ensure_output_dir
+
 
 PVALUE_THRESHOLD = 0.05
 DISPARITY_WARNING = 10.0
@@ -170,6 +174,7 @@ def run_label_audit(
     p_threshold: float = PVALUE_THRESHOLD,
     warning_threshold: float = DISPARITY_WARNING,
     critical_threshold: float = DISPARITY_CRITICAL,
+    output_dir: str | None = None,
 ) -> pd.DataFrame:
     """
     Run the label bias-risk audit.
@@ -197,6 +202,9 @@ def run_label_audit(
     critical_threshold:
         Outcome-rate disparity in percentage points required for CRITICAL.
 
+    output_dir:
+        Optional directory where the audit table should be saved as CSV.
+
     Returns
     -------
     pandas.DataFrame
@@ -206,6 +214,18 @@ def run_label_audit(
     if df.empty:
         raise ValueError("The dataframe is empty.")
 
+    if not 0 < p_threshold < 1:
+        raise ValueError("p_threshold must be between 0 and 1.")
+
+    if warning_threshold < 0:
+        raise ValueError("warning_threshold cannot be negative.")
+
+    if critical_threshold < warning_threshold:
+        raise ValueError(
+            "critical_threshold must be greater than or equal to "
+            "warning_threshold."
+        )
+    
     _validate_columns(
         df=df,
         group_cols=group_cols,
@@ -281,4 +301,14 @@ def run_label_audit(
                 }
             )
 
-    return pd.DataFrame(audit_rows)
+    result = pd.DataFrame(audit_rows)
+
+    if output_dir is not None:
+        ensure_output_dir(output_dir)
+        output_path = os.path.join(
+            output_dir,
+            "label_audit.csv",
+        )
+        result.to_csv(output_path, index=False)
+
+    return result
