@@ -207,3 +207,46 @@ def test_label_audit_writes_csv(tmp_path):
 
     assert len(saved) == len(result)
     assert list(saved.columns) == list(result.columns)
+
+
+def test_three_groups_do_not_inherit_omnibus_significance():
+    df = pd.DataFrame({
+        "group": ["A"] * 100 + ["B"] * 100 + ["C"] * 100,
+        "outcome": (
+            [1] * 50 + [0] * 50
+            + [1] * 50 + [0] * 50
+            + [1] * 90 + [0] * 10
+        ),
+    })
+
+    result = run_label_audit(
+        df,
+        group_cols=["group"],
+        label_col="outcome",
+        positive_label=1,
+    )
+
+    ab = result.loc[
+        (result["group_1"] == "A")
+        & (result["group_2"] == "B")
+    ].iloc[0]
+
+    ac = result.loc[
+        (result["group_1"] == "A")
+        & (result["group_2"] == "C")
+    ].iloc[0]
+
+    assert len(result) == 3
+
+    # The omnibus test detects an overall association.
+    assert ab["p_value"] < 0.05
+
+    # A and B have identical outcome rates.
+    assert ab["disparity_pp"] == 0.0
+    assert ab["pairwise_p_value"] == 1.0
+    assert ab["pairwise_adjusted_p_value"] == 1.0
+    assert ab["flag"] == "INFO"
+
+    # A and C genuinely differ.
+    assert ac["pairwise_adjusted_p_value"] < 0.05
+    assert ac["flag"] == "CRITICAL"

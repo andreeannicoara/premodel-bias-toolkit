@@ -123,6 +123,36 @@ def _chi2_label_association(
     return chi2, p_value, dof
 
 
+def _pairwise_label_p_value(
+    outcome_1: dict,
+    outcome_2: dict,
+) -> float | None:
+    """Chi-square p-value for one pair of demographic groups."""
+
+    positives_1 = outcome_1["positive_count"]
+    positives_2 = outcome_2["positive_count"]
+
+    negatives_1 = outcome_1["group_count"] - positives_1
+    negatives_2 = outcome_2["group_count"] - positives_2
+
+    if (
+        outcome_1["group_count"] == 0
+        or outcome_2["group_count"] == 0
+        or positives_1 + positives_2 == 0
+        or negatives_1 + negatives_2 == 0
+    ):
+        return None
+
+    contingency = [
+        [positives_1, negatives_1],
+        [positives_2, negatives_2],
+    ]
+
+    _, p_value, _, _ = stats.chi2_contingency(contingency)
+
+    return float(p_value)
+
+
 def _label_flag(
     p_value: float | None,
     disparity_pp: float,
@@ -157,12 +187,12 @@ def _label_flag(
     if p_value < p_threshold:
         return (
             "WARNING",
-            "Statistical association detected, but the outcome-rate disparity is small.",
+            "Statistically significant pairwise difference detected, but the outcome-rate disparity is small.",
         )
 
     return (
         "INFO",
-        "No statistically significant association detected.",
+        "No statistically significant pairwise outcome-rate difference detected.",
     )
 
 
@@ -249,7 +279,10 @@ def run_label_audit(
             label_col=label_col,
         )
 
-        for group_1, group_2 in combinations(group_values, 2):
+        group_pairs = list(combinations(group_values, 2))
+        number_of_comparisons = len(group_pairs)
+
+        for group_1, group_2 in group_pairs:
             outcome_1 = _group_outcome_rate(
                 df=df,
                 group_col=group_col,
@@ -271,8 +304,19 @@ def run_label_audit(
                 - outcome_2["positive_rate"]
             )
 
+            pairwise_p_value = _pairwise_label_p_value(
+                outcome_1,
+                outcome_2,
+            )
+
+            adjusted_pairwise_p_value = (
+                min(pairwise_p_value * number_of_comparisons, 1.0)
+                if pairwise_p_value is not None
+                else None
+            )
+
             flag, reason = _label_flag(
-                p_value=p_value,
+                p_value=adjusted_pairwise_p_value,
                 disparity_pp=disparity_pp,
                 p_threshold=p_threshold,
                 warning_threshold=warning_threshold,
@@ -294,7 +338,9 @@ def run_label_audit(
                     "group_2_positive_rate": outcome_2["positive_rate"],
                     "disparity_pp": round(disparity_pp, 2),
                     "chi2": None if chi2 is None else round(chi2, 4),
-                    "p_value": None if p_value is None else round(p_value, 6),
+                    "p_value": p_value,
+                    "pairwise_p_value": pairwise_p_value,
+                    "pairwise_adjusted_p_value": adjusted_pairwise_p_value,
                     "degrees_of_freedom": dof,
                     "flag": flag,
                     "reason": reason,
