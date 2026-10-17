@@ -222,7 +222,7 @@ def run_missingness_audit(
                         "overall_missing_percentage": overall_missing_percentage,
                         "disparity_pp": round(disparity_pp, 2),
                         "chi2": None if chi2 is None else round(chi2, 4),
-                        "p_value": None if p_value is None else round(p_value, 6),
+                        "p_value": None if p_value is None else float(p_value),
                         "degrees_of_freedom": dof,
                         "flag": flag,
                     }
