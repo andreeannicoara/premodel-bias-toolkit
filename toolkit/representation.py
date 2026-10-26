@@ -94,7 +94,7 @@ def _summarise_group_column(
 
     counts.columns = ["group_value", "count"]
     counts["group_variable"] = group_col
-    counts["percentage"] = (counts["count"] / total_rows * 100).round(2)
+    counts["percentage"] = counts["count"] / total_rows * 100
 
     counts["flag"] = counts.apply(
         lambda row: _flag_representation(
@@ -116,7 +116,7 @@ def _summarise_group_column(
         axis=1,
     )
 
-    return counts[
+    result = counts[
         [
             "group_variable",
             "group_value",
@@ -125,7 +125,12 @@ def _summarise_group_column(
             "flag",
             "reason",
         ]
-    ]
+    ].copy()
+
+    # Round only after evaluating the thresholds.
+    result["percentage"] = result["percentage"].round(4)
+
+    return result
 
 
 def _representation_reason(
