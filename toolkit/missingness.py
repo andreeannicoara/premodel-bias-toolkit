@@ -24,9 +24,12 @@ Reference:
 import os
 import numpy as np
 import pandas as pd
-from scipy import stats
 
-from toolkit.utils import get_flag, ensure_output_dir
+from toolkit.utils import (
+    get_flag,
+    ensure_output_dir,
+    contingency_association,
+)
 
 
 # Thresholds
@@ -58,12 +61,7 @@ def _chi2_independence(df: pd.DataFrame, var_col: str, group_col: str):
     mask = df[group_col].notna()
     contingency = pd.crosstab(df.loc[mask, group_col], miss_indicator[mask])
 
-    if contingency.shape[0] < 2 or contingency.shape[1] < 2:
-        return None, None, None
-
-    chi2, p, dof, _ = stats.chi2_contingency(contingency)
-    return chi2, p, dof
-
+    return contingency_association(contingency)
 
 def _validate_group_columns(df: pd.DataFrame, group_cols: list[str]) -> None:
     """
@@ -193,7 +191,7 @@ def run_missingness_audit(
                 - group_rates["missing_percentage"].min()
             )
 
-            chi2, p_value, dof = _chi2_independence(
+            chi2, p_value, dof, test_method = _chi2_independence(
                 audit_df,
                 var_col=var_col,
                 group_col=group_col,
@@ -224,6 +222,7 @@ def run_missingness_audit(
                         "chi2": None if chi2 is None else round(chi2, 4),
                         "p_value": None if p_value is None else float(p_value),
                         "degrees_of_freedom": dof,
+                        "test_method": test_method,
                         "flag": flag,
                     }
                 )
@@ -242,6 +241,7 @@ def run_missingness_audit(
             "chi2",
             "p_value",
             "degrees_of_freedom",
+            "test_method",
             "flag",
         ],
     )

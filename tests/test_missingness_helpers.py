@@ -31,33 +31,50 @@ def test_indicator_all_missing_returns_all_ones():
 
 # _chi2_independence
 
-def test_chi2_returns_three_values():
+def test_sparse_chi2_uses_fisher():
     df = pd.DataFrame({
-        "race":   ["A", "A", "B", "B", "A", "B"],
-        "weight": [70,  np.nan, 80, np.nan, 65, np.nan],
+        "race": ["A", "A", "B", "B", "A", "B"],
+        "weight": [70, np.nan, 80, np.nan, 65, np.nan],
     })
-    chi2, p, dof = _chi2_independence(df, "weight", "race")
-    assert chi2 is not None
+
+    chi2, p, dof, method = _chi2_independence(
+        df, "weight", "race"
+    )
+
+    assert chi2 is None
     assert 0 <= p <= 1
-    assert dof > 0
+    assert dof is None
+    assert method == "fisher_exact"
+
 
 def test_chi2_no_variation_returns_none():
-    # All values missing for all groups - contingency table has only one column
     df = pd.DataFrame({
-        "race":   ["A", "A", "B", "B"],
+        "race": ["A", "A", "B", "B"],
         "weight": [np.nan, np.nan, np.nan, np.nan],
     })
-    chi2, p, dof = _chi2_independence(df, "weight", "race")
+
+    chi2, p, dof, method = _chi2_independence(
+        df, "weight", "race"
+    )
+
     assert chi2 is None
+    assert p is None
+    assert method == "not_testable"
+
 
 def test_chi2_excludes_missing_group_rows():
     df = pd.DataFrame({
-        "race":   ["A", None, "B", "A"],
+        "race": ["A", None, "B", "A"],
         "weight": [1.0, 2.0, np.nan, np.nan],
     })
-    # Row with None race should be excluded without raising an error
-    chi2, p, dof = _chi2_independence(df, "weight", "race")
-    assert chi2 is not None
+
+    chi2, p, dof, method = _chi2_independence(
+        df, "weight", "race"
+    )
+
+    assert p is not None
+    assert method == "fisher_exact"
+
 
 
 if __name__ == "__main__":

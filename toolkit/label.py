@@ -16,7 +16,7 @@ Main checks:
 from itertools import combinations
 
 import pandas as pd
-from scipy import stats
+from toolkit.utils import contingency_association
 
 import os
 
@@ -115,19 +115,14 @@ def _chi2_label_association(
         valid_data[label_col],
     )
 
-    if contingency.shape[0] < 2 or contingency.shape[1] < 2:
-        return None, None, None
-
-    chi2, p_value, dof, _ = stats.chi2_contingency(contingency)
-
-    return chi2, p_value, dof
+    return contingency_association(contingency)
 
 
 def _pairwise_label_p_value(
     outcome_1: dict,
     outcome_2: dict,
-) -> float | None:
-    """Chi-square p-value for one pair of demographic groups."""
+) -> tuple[float | None, str]:
+    """Calculate a pairwise association p-value and report its method."""
 
     positives_1 = outcome_1["positive_count"]
     positives_2 = outcome_2["positive_count"]
@@ -141,16 +136,16 @@ def _pairwise_label_p_value(
         or positives_1 + positives_2 == 0
         or negatives_1 + negatives_2 == 0
     ):
-        return None
+        return None, "not_testable"
 
     contingency = [
         [positives_1, negatives_1],
         [positives_2, negatives_2],
     ]
 
-    _, p_value, _, _ = stats.chi2_contingency(contingency)
+    _, p_value, _, method = contingency_association(contingency)
 
-    return float(p_value)
+    return p_value, method
 
 
 def _label_flag(
@@ -273,7 +268,7 @@ def run_label_audit(
     for group_col in group_cols:
         group_values = df[group_col].dropna().unique()
 
-        chi2, p_value, dof = _chi2_label_association(
+        chi2, p_value, dof, omnibus_test = _chi2_label_association(
             df=df,
             group_col=group_col,
             label_col=label_col,
@@ -304,7 +299,7 @@ def run_label_audit(
                 - outcome_2["positive_rate"]
             )
 
-            pairwise_p_value = _pairwise_label_p_value(
+            pairwise_p_value, pairwise_test = _pairwise_label_p_value(
                 outcome_1,
                 outcome_2,
             )
@@ -342,6 +337,8 @@ def run_label_audit(
                     "pairwise_p_value": pairwise_p_value,
                     "pairwise_adjusted_p_value": adjusted_pairwise_p_value,
                     "degrees_of_freedom": dof,
+                    "omnibus_test": omnibus_test,
+                    "pairwise_test": pairwise_test,
                     "flag": flag,
                     "reason": reason,
                 }

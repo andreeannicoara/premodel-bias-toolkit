@@ -278,8 +278,6 @@ def run_measurement_audit(
         "std_1",
         "std_2",
         "ks_statistic",
-        "p_value",
-        "adjusted_p_value",
     ]
 
     if not result.empty:

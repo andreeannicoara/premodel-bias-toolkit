@@ -14,7 +14,9 @@ AUDIT_NOTES = {
         "without a reference population."
     ),
     "missingness": (
-        "Associations in missingness do not identify MCAR, MAR or MNAR mechanisms."
+        "Associations in missingness do not identify MCAR, MAR or MNAR "
+        "mechanisms. An INFO flag may mean that no valid statistical "
+        "test was available; inspect the test_method column."
     ),
     "measurement": (
         "KS comparisons indicate distributional differences, not measurement "
@@ -23,7 +25,9 @@ AUDIT_NOTES = {
     ),
     "label": (
         "Outcome-rate disparities do not establish an invalid label, "
-        "discrimination or causation. Pairwise flags use adjusted pairwise p-values."
+        "discrimination or causation. Pairwise flags use adjusted "
+        "pairwise p-values. Sparse multi-group tables may lack a "
+        "valid omnibus test."
     ),
 }
 
