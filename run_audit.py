@@ -11,7 +11,9 @@ from toolkit.representation import run_representation_audit
 from toolkit.missingness import run_missingness_audit
 from toolkit.measurement import run_measurement_audit
 from toolkit.label import run_label_audit
+from toolkit.reporting import generate_audit_report
 
+from pathlib import Path
 
 def run_full_audit(
     df: pd.DataFrame,
@@ -76,9 +78,22 @@ def run_full_audit(
         output_dir=output_dir,
     )
 
-    return {
+    results = {
         "representation": representation,
         "missingness": missingness,
         "measurement": measurement,
         "label": label,
     }
+
+    if output_dir is not None:
+        generate_audit_report(
+            results=results,
+            n_rows=len(df),
+            group_cols=group_cols,
+            measure_cols=measure_cols,
+            label_col=label_col,
+            positive_label=positive_label,
+            output_path=Path(output_dir) / "audit_report.html",
+        )
+
+    return results
