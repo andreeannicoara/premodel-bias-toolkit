@@ -58,3 +58,6 @@ node_modules/
 .env.local
 secrets.json
 credentials.json
+
+# Generated Diabetes case-study results
+output/diabetes/
