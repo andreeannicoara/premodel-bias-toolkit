@@ -94,7 +94,7 @@ def _group_outcome_rate(
     return {
         "group_count": group_count,
         "positive_count": positive_count,
-        "positive_rate": round(positive_rate, 2),
+        "positive_rate": positive_rate
     }
 
 
@@ -329,9 +329,9 @@ def run_label_audit(
                     "group_2_count": outcome_2["group_count"],
                     "group_1_positive_count": outcome_1["positive_count"],
                     "group_2_positive_count": outcome_2["positive_count"],
-                    "group_1_positive_rate": outcome_1["positive_rate"],
-                    "group_2_positive_rate": outcome_2["positive_rate"],
-                    "disparity_pp": round(disparity_pp, 2),
+                    "group_1_positive_rate": round(outcome_1["positive_rate"], 4),
+                    "group_2_positive_rate": round(outcome_2["positive_rate"], 4),
+                    "disparity_pp": round(disparity_pp, 4),
                     "chi2": None if chi2 is None else round(chi2, 4),
                     "p_value": p_value,
                     "pairwise_p_value": pairwise_p_value,
