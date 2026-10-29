@@ -1,0 +1,18 @@
+scenario,scenario_type,n_per_group,shift,group_1,group_2,number_of_comparisons,expected_ks,observed_ks,p_value,expected_adjusted_p,adjusted_p_value,expected_flag,flag,interpretation_note
+shift_0_n20,quantile_shift,20,0.0,A,B,1,0.0,0.0,1.0,1.0,1.0,INFO,INFO,Deterministic scenario; not a power estimate
+shift_0.5_n20,quantile_shift,20,0.5,A,B,1,0.20000000000000007,0.2,0.8319696107963263,0.8319696107963263,0.8319696107963263,INFO,INFO,Deterministic scenario; not a power estimate
+shift_1_n20,quantile_shift,20,1.0,A,B,1,0.4,0.4,0.08105771161340149,0.08105771161340149,0.08105771161340149,INFO,INFO,Deterministic scenario; not a power estimate
+shift_0_n50,quantile_shift,50,0.0,A,B,1,0.0,0.0,1.0,1.0,1.0,INFO,INFO,Deterministic scenario; not a power estimate
+shift_0.5_n50,quantile_shift,50,0.5,A,B,1,0.20000000000000007,0.2,0.2719135601522248,0.2719135601522248,0.2719135601522248,INFO,INFO,Deterministic scenario; not a power estimate
+shift_1_n50,quantile_shift,50,1.0,A,B,1,0.4,0.4,0.0005822568814776493,0.0005822568814776493,0.0005822568814776493,WARNING,WARNING,Deterministic scenario; not a power estimate
+shift_0_n100,quantile_shift,100,0.0,A,B,1,0.0,0.0,1.0,1.0,1.0,INFO,INFO,Deterministic scenario; not a power estimate
+shift_0.5_n100,quantile_shift,100,0.5,A,B,1,0.20000000000000007,0.2,0.03638428787491733,0.03638428787491733,0.03638428787491733,WARNING,WARNING,Deterministic scenario; not a power estimate
+shift_1_n100,quantile_shift,100,1.0,A,B,1,0.39000000000000007,0.39,3.5690338557186834e-07,3.5690338557186834e-07,3.5690338557186834e-07,WARNING,WARNING,Deterministic scenario; not a power estimate
+shift_0_n200,quantile_shift,200,0.0,A,B,1,0.0,0.0,1.0,1.0,1.0,INFO,INFO,Deterministic scenario; not a power estimate
+shift_0.5_n200,quantile_shift,200,0.5,A,B,1,0.20000000000000007,0.2,0.000648608042418048,0.000648608042418048,0.000648608042418048,WARNING,WARNING,Deterministic scenario; not a power estimate
+shift_1_n200,quantile_shift,200,1.0,A,B,1,0.38500000000000006,0.385,1.3261055712130201e-13,1.3261055712130201e-13,1.3261055712130201e-13,WARNING,WARNING,Deterministic scenario; not a power estimate
+three_groups,multiple_comparisons,100,0.0,A,B,3,0.0,0.0,1.0,1.0,1.0,INFO,INFO,Deterministic scenario; not a power estimate
+three_groups,multiple_comparisons,100,1.0,A,C,3,0.39000000000000007,0.39,3.5690338557186834e-07,1.070710156715605e-06,1.070710156715605e-06,WARNING,WARNING,Deterministic scenario; not a power estimate
+three_groups,multiple_comparisons,100,1.0,B,C,3,0.39000000000000007,0.39,3.5690338557186834e-07,1.070710156715605e-06,1.070710156715605e-06,WARNING,WARNING,Deterministic scenario; not a power estimate
+below_minimum,minimum_group_size,19,1.0,A,B,1,,,,,,INFO,INFO,Deterministic scenario; not a power estimate
+discrete_counts,discrete_ties,100,1.0,A,B,1,0.10000000000000009,0.1,0.7020569828664881,0.7020569828664881,0.7020569828664881,INFO,INFO,KS p-value exploratory for tied discrete counts
