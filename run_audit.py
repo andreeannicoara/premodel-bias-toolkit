@@ -1,8 +1,9 @@
 """
-Integrated runner for the pre-modelling bias audit toolkit.
+Integrated runner for Aidit-HD.
 
-This module coordinates the four audit dimensions:
-representation, missingness, measurement, and label bias-risk detection.
+Coordinates four audit dimensions: representation, missingness,
+measurement and labels, to identify statistical indicators of
+potential bias in healthcare data.
 """
 
 import pandas as pd
@@ -24,7 +25,7 @@ def run_full_audit(
     output_dir: str | None = None,
 ) -> dict[str, pd.DataFrame]:
     """
-    Run all four pre-modelling bias-risk audits.
+    Run all four Aidit-HD audit modules.
 
     Parameters
     ----------

@@ -34,6 +34,9 @@ def test_consolidated_report_contains_all_audits(tmp_path):
 
     page = report.read_text(encoding="utf-8")
 
+    assert "<title>Aidit-HD | Healthcare Data Audit Report</title>" in page
+    assert "<h1>Aidit-HD: Healthcare Data Audit Report</h1>" in page
+
     for heading in (
         "Representation",
         "Missingness",

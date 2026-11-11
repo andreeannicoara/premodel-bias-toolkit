@@ -1,34 +1,64 @@
-# healthcare-bias-audit
+# Aidit-HD
 
-A Python-based diagnostic toolkit for detecting pre-modelling bias-risk indicators in healthcare datasets, developed as part of an MSc Data Science dissertation at the University of Essex Online.
+**A Toolkit for Auditing Potential Bias in Healthcare Data**
 
-## Project Overview
+Aidit-HD is a Python-based diagnostic toolkit developed for an MSc Data Science dissertation at the University of Essex Online. It examines healthcare datasets before predictive model development and identifies statistical indicators of potential bias.
 
-Most fairness research in healthcare AI focuses on model outputs. This toolkit intervenes earlier — at the dataset stage, before any model is trained. It audits healthcare datasets across four bias dimensions:
+## Audit Dimensions
 
-- **Representation bias** — are demographic groups proportionally represented?
-- **Missingness bias** — is missing data patterned across demographic groups (MNAR)?
-- **Measurement bias** — is the same variable collected consistently across groups?
-- **Label bias** — does the outcome variable mean the same thing for all groups?
+- **Representation:** Demographic subgroup counts, proportions and threshold-based flags.
+- **Missingness:** Missing-data rates and statistical associations across demographic groups.
+- **Measurement:** Pairwise comparisons of numeric feature distributions using Kolmogorov-Smirnov tests.
+- **Label:** Binary outcome-rate disparities and statistical comparisons between demographic groups.
 
-The toolkit accepts a tabular healthcare dataset (CSV) as input and produces a structured diagnostic report with quantitative metrics, severity flags, and visualisations.
+The toolkit produces individual CSV audit tables and a consolidated HTML report. Findings are classified as INFO, WARNING or CRITICAL.
+
+These classifications are diagnostic indicators. They do not establish discrimination, causation or clinical unfairness.
 
 ## Research Context
 
-**Title:** Diagnosing Bias Before the Model: A Multi-Dimensional Audit Toolkit for Healthcare Datasets
+**Dissertation:** Aidit-HD: A Toolkit for Auditing Potential Bias in Healthcare Data
 
 **Supervisor:** Dr Bakhtiyar Ahmed, University of Essex Online
 
-**Dataset used for validation:** Diabetes 130-US Hospitals for Years 1999–2008 (Strack et al., 2014), available via the [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/296/diabetes+130+us+hospitals+for+years+1999+2008).
+**Case study:** Diabetes 130-US Hospitals for Years 1999–2008 (Strack et al., 2014).
 
-## Data Setup
+[Dataset source: UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/296/diabetes+130+us+hospitals+for+years+1999+2008)
 
-Download the dataset from the UCI repository and place `diabetic_data.csv` in the `data/` folder. The data folder is gitignored to avoid redistributing the dataset.
-
-## Usage
+## Installation
 
 ```bash
-python run_audit.py --data data/diabetic_data.csv --group race
+pip install -r requirements.txt
 ```
 
-Output is saved to the `outputs/` folder.
+## Running the Case Study
+
+Download the dataset and place `diabetic_data.csv` in the `Data/` directory.
+
+Run the encounter-level audit:
+
+```bash
+python -m experiments.diabetes_case_study
+```
+
+The HTML report is saved to:
+
+`output/diabetes/audit_report.html`
+
+To run the one-encounter-per-patient sensitivity analysis:
+
+```bash
+python -m experiments.patient_level_sensitivity
+```
+
+## Tests
+
+```bash
+python -m pytest
+```
+
+## Limitations
+
+Aidit-HD uses established statistical methods to screen datasets for potential concerns. Its results require contextual interpretation and do not establish whether an observed difference is unfair.
+
+The controlled experiments verify expected computational behaviour. They do not establish the toolkit's ability to identify all genuine forms of bias.

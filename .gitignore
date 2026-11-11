@@ -61,3 +61,6 @@ credentials.json
 
 # Generated Diabetes case-study results
 output/diabetes/
+
+# Local data files
+Data/*
