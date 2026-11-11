@@ -1,4 +1,4 @@
-"""CSV and consolidated HTML reporting for the pre-modelling audit toolkit."""
+"""CSV and consolidated HTML reporting for the Aidit-HD audit toolkit."""
 
 from html import escape
 from pathlib import Path
@@ -116,7 +116,7 @@ def generate_audit_report(
 
     html = (
         "<!doctype html><html lang='en'><head><meta charset='utf-8'>"
-        "<title>Pre-modelling Dataset Audit</title>"
+        "<title>Aidit-HD | Healthcare Data Audit Report</title>"
         "<style>body{font:15px Arial,sans-serif;max-width:1100px;"
         "margin:32px auto;padding:0 20px;color:#233043;line-height:1.5}"
         "h1,h2{color:#153b56}section{margin-top:36px}"
@@ -128,7 +128,7 @@ def generate_audit_report(
         ".audit-table tr:nth-child(even){background:#f9fbfc}"
         ".note{color:#506171}"
         "footer{margin:30px 0;color:#506171}</style></head><body>"
-        "<h1>Pre-modelling Dataset Audit</h1>"
+        "<h1>Aidit-HD: Healthcare Data Audit Report</h1>"
         + metadata
         + "<h2>Summary</h2>"
         + "<p>Each table row is one finding, except missingness counts "
